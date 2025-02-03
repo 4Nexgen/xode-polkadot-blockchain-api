@@ -81,6 +81,7 @@ export class ApiController {
     return await this.apiService.getBlockTransactions(block_number);
   }
 
+  @Get('transactions/:block_number')
   @ApiOperation({
     summary: 'Get details of a transaction from a block',
     description:
@@ -137,10 +138,52 @@ export class ApiController {
     status: 500,
     description: 'Internal server error.',
   })
-  @Get('transactions/:block_number')
   async getTransactionDetails(
     @Param('block_number', ParseIntPipe) block_number: number,
   ) {
     return await this.apiService.getTransactionDetails(block_number);
+  }
+
+  @Get('balance/:address')
+  @ApiOperation({
+    summary: 'Get address balance',
+    description: 'Fetches native balance of the address in XODE blockchain',
+  })
+  @ApiParam({
+    name: 'address',
+    type: String,
+    description: 'Wallet address.',
+    example: '5FJ9VWpubQXeiLKGcVmo3zD627UAJCiW6bupSUATeyNXTH1m',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully fetched address balance.',
+    schema: {
+      example: {
+        balance: {
+          nonce: '2,226',
+          consumers: '1',
+          providers: '1',
+          sufficients: '0',
+          data: {
+            free: '1,014,831,364',
+            reserved: '9,690,965,000,000',
+            frozen: '0',
+            flags: '170,141,183,460,469,231,731,687,303,715,884,105,728',
+          },
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid address provided.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error.',
+  })
+  async getAddressBalance(@Param('address') address: string) {
+    return await this.apiService.getAddressBalance(address);
   }
 }

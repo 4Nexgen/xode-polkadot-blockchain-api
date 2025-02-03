@@ -153,4 +153,27 @@ export class ApiService {
       await api.disconnect();
     }
   }
+
+  async getAddressBalance(address: string) {
+    const { ApiPromise, WsProvider } = require('@polkadot/api');
+
+    // Initialize the provider
+    const provider = new WsProvider(
+      'wss://rpcnodea01.xode.net/n7yoxCmcIrCF6VziCcDmYTwL8R03a/rpc',
+    );
+
+    // Create the API instance
+    const api = await ApiPromise.create({ provider });
+
+    try {
+      const result = await api.query.system.account(address);
+      return { balance: result.toHuman() };
+    } catch (error) {
+      console.error('Error fetching address balance:', error);
+      throw new Error(`Failed to fetch address balance: ${error.message}`);
+    } finally {
+      // Disconnect the API
+      await api.disconnect();
+    }
+  }
 }
