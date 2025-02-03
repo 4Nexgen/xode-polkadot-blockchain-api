@@ -3,63 +3,69 @@ import { CreateWalletDto } from './dto/create-wallet.dto';
 
 @Injectable()
 export class ApiService {
-  async createWallet(data: CreateWalletDto) {
+  /**
+   * Generates a new wallet with a mnemonic and address.
+   *
+   * @param {CreateWalletDto} data - The data containing the wallet name.
+   * @returns {Promise<{ address: string; mnemonic: string }>} - The generated wallet address and mnemonic phrase.
+   * @throws {Error} - Throws an error if wallet creation fails.
+   */
+  async createWallet(
+    data: CreateWalletDto,
+  ): Promise<{ address: string; mnemonic: string }> {
     const { mnemonicGenerate } = require('@polkadot/util-crypto');
-    const { Keyring } = require('@polkadot/api');
+    const { Keyring } = require('@polkadot/keyring');
 
     try {
-      // generate a random mnemonic, 12 words in length
+      // Generate a random 12-word mnemonic phrase
       const mnemonic = mnemonicGenerate(12);
 
       // Create an instance of the Keyring
-      // Using standard Polkadot/Substrate chains `sr25519`
-      // The ss58Format will be used to format addresses, XODE blockchain uses `280`
-      // These are the only rules needed for creating address
+      // - Uses `sr25519` (default for Polkadot/Substrate chains)
+      // - `ss58Format: 280` for XODE blockchain address format
       const keyring = new Keyring({ type: 'sr25519', ss58Format: 280 });
 
-      // Add mnemonic to the keyring with the name parameter
+      // Add mnemonic to the keyring and create a key pair
       const pair = keyring.addFromUri(mnemonic, { name: data.name });
 
-      // Returns the created wallet address and it's mnemonic
+      // Return the created wallet address and its mnemonic phrase
       return { address: pair.address, mnemonic };
     } catch (error) {
-      throw new Error(error.message);
+      console.error('Error creating wallet:', error);
+      throw new Error(`Wallet creation failed: ${error.message}`);
     }
   }
 
-  async getLatestBlock() {
-    // Here we don't pass the (optional) provider, connecting directly to the default
-    // node/port, i.e. `ws://127.0.0.1:9944`. Await for the isReady promise to ensure
-    // the API has connected to the node and completed the initialisation process
+  /**
+   * Retrieves the latest block number from the Polkadot-compatible blockchain.
+   *
+   * @async
+   * @function getLatestBlock
+   * @returns {Promise<{ block: string }>} - An object containing the latest block number.
+   * @throws {Error} - Throws an error if the block retrieval fails.
+   */
+  async getLatestBlock(): Promise<{ block: string }> {
     const { ApiPromise, WsProvider } = require('@polkadot/api');
 
-    // Initialize the provider
+    // Define the WebSocket provider URL for the Polkadot node.
     const provider = new WsProvider(
       'wss://rpcnodea01.xode.net/n7yoxCmcIrCF6VziCcDmYTwL8R03a/rpc',
     );
 
-    // Create the API instance
+    // Create the Polkadot API instance.
     const api = await ApiPromise.create({ provider });
 
-    // We only display a couple, then unsubscribe
-    let result: string = '';
-
     try {
-      // Subscribe to the new headers on-chain. The callback is fired when new headers
-      // are found, the call itself returns a promise with a subscription that can be
-      // used to unsubscribe from the newHead subscription
-      const unsubscribe = await api.rpc.chain.subscribeNewHeads((header) => {
-        result = `Chain is at block: #${header.number}`;
-        unsubscribe();
-      });
+      // Fetch the latest block number from the system module.
+      const blockNumber = await api.query.system.number();
 
-      // Return the total current latest block height
-      return result;
+      // Return the latest block number.
+      return { block: blockNumber.toString() };
     } catch (error) {
-      console.error('Error fetching block', error);
-      throw new Error(`Failed to fetch block ${error.message}`);
+      console.error('Error fetching latest block:', error);
+      throw new Error(`Failed to fetch latest block: ${error.message}`);
     } finally {
-      // Disconnect the API
+      // Ensure that the API connection is closed after execution.
       await api.disconnect();
     }
   }

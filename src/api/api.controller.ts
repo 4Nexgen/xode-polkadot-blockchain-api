@@ -15,16 +15,48 @@ import { CreateWalletDto } from './dto/create-wallet.dto';
 export class ApiController {
   constructor(private readonly apiService: ApiService) {}
 
-  @Post('create-walet')
-  async createWallet(@Body() body: CreateWalletDto) {
+  /**
+   * API endpoint to create a new blockchain wallet.
+   *
+   * @param {CreateWalletDto} body - The data for wallet creation.
+   * @returns {Promise<{ address: string; mnemonic: string }>} - The created wallet details.
+   * @throws {InternalServerErrorException} - If wallet creation fails.
+   */
+  @Post('create-wallet')
+  @ApiOperation({
+    summary: 'Creates new wallet address',
+    description: 'Generate a new wallet with an address and mnemonic',
+  })
+  @ApiResponse({ status: 201, description: 'Wallet successfully created.' })
+  @ApiResponse({ status: 500, description: 'Internal server error.' })
+  async createWallet(
+    @Body() body: CreateWalletDto,
+  ): Promise<{ address: string; mnemonic: string }> {
     return await this.apiService.createWallet(body);
   }
 
+  /**
+   * API endpoint to get the latest block height from the blockchain.
+   *
+   * @returns {Promise<{ block: string }>} - The latest block height.
+   * @throws {InternalServerErrorException} - If there is an error fetching the block.
+   */
   @Get('latest-block')
-  @ApiOperation({ description: 'Get the current latest block height' })
-  @ApiResponse({ status: 200, description: 'Success query result.' })
-  @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async getLatestBlock() {
+  @ApiOperation({
+    summary: 'Get the current latest block height.',
+    description:
+      'Returns a number that tells the latest block number of the blockchain',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved the latest block height.',
+    schema: { example: { block: '1' } },
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error while fetching block.',
+  })
+  async getLatestBlock(): Promise<{ block: string }> {
     return await this.apiService.getLatestBlock();
   }
 
@@ -32,7 +64,7 @@ export class ApiController {
   @ApiOperation({
     summary: 'Get events for a specific block',
     description:
-      'Fetches all events associated with a specific block number in the Polkadot blockchain.',
+      'Fetches all events associated with a specific block number in the XODE blockchain.',
   })
   @ApiParam({
     name: 'block_number',
