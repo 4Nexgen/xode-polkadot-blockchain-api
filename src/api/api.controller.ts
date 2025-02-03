@@ -176,20 +176,29 @@ export class ApiController {
     return await this.apiService.getTransactionDetails(block_number);
   }
 
+  /**
+   * API endpoint to retrieve the balance of a given wallet address.
+   *
+   * @param {string} address - The wallet address to query.
+   * @returns {Promise<object>} - The account balance details.
+   * @throws {BadRequestException} - If an invalid address format is provided.
+   * @throws {InternalServerErrorException} - If fetching balance fails.
+   */
   @Get('balance/:address')
   @ApiOperation({
     summary: 'Get address balance',
-    description: 'Fetches native balance of the address in XODE blockchain',
+    description:
+      'Fetches the native balance of the address in the XODE blockchain.',
   })
   @ApiParam({
     name: 'address',
     type: String,
-    description: 'Wallet address.',
+    description: 'The wallet address whose balance needs to be fetched.',
     example: '5FJ9VWpubQXeiLKGcVmo3zD627UAJCiW6bupSUATeyNXTH1m',
   })
   @ApiResponse({
     status: 200,
-    description: 'Successfully fetched address balance.',
+    description: 'Successfully fetched the address balance.',
     schema: {
       example: {
         balance: {
@@ -215,7 +224,8 @@ export class ApiController {
     status: 500,
     description: 'Internal server error.',
   })
-  async getAddressBalance(@Param('address') address: string) {
+  async getAddressBalance(@Param('address') address: string): Promise<object> {
+    // Fetch balance details using the ApiService
     return await this.apiService.getAddressBalance(address);
   }
 }

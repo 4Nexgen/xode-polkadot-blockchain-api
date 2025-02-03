@@ -160,10 +160,17 @@ export class ApiService {
     }
   }
 
-  async getAddressBalance(address: string) {
+  /**
+   * Fetches the native balance of a given wallet address in the XODE blockchain.
+   *
+   * @param {string} address - The wallet address.
+   * @returns {Promise<object>} - The account balance details formatted in human-readable format.
+   * @throws {Error} - Throws an error if balance retrieval fails.
+   */
+  async getAddressBalance(address: string): Promise<object> {
     const { ApiPromise, WsProvider } = require('@polkadot/api');
 
-    // Initialize the provider
+    // Initialize the provider with the WebSocket RPC endpoint
     const provider = new WsProvider(
       'wss://rpcnodea01.xode.net/n7yoxCmcIrCF6VziCcDmYTwL8R03a/rpc',
     );
@@ -172,13 +179,16 @@ export class ApiService {
     const api = await ApiPromise.create({ provider });
 
     try {
+      // Query the balance information of the given address
       const result = await api.query.system.account(address);
+
+      // Return the balance details in a human-readable format
       return { balance: result.toHuman() };
     } catch (error) {
       console.error('Error fetching address balance:', error);
       throw new Error(`Failed to fetch address balance: ${error.message}`);
     } finally {
-      // Disconnect the API
+      // Ensure the API connection is properly closed
       await api.disconnect();
     }
   }
