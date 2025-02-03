@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { CreateWalletDto } from './dto/create-wallet.dto';
 
 // Import the API
 import { ApiPromise } from '@polkadot/api';
+
+// Import `mnemonicGenerate` to create wallet
+import { mnemonicGenerate } from '@polkadot/util-crypto';
+
+import { Keyring } from '@polkadot/api';
 
 @Injectable()
 export class ApiService {
@@ -24,5 +30,24 @@ export class ApiService {
 
     // Return the total current latest block height
     return result;
+  }
+
+  async createWallet(data: CreateWalletDto) {
+    const { mnemonicGenerate } = require('@polkadot/util-crypto');
+
+    // generate a random mnemonic, 12 words in length
+    const mnemonic = mnemonicGenerate(12);
+
+    // Create an instance of the Keyring
+    // Using standard Polkadot/Substrate chains `sr25519`
+    // The ss58Format will be used to format addresses, XODE blockchain uses `280`
+    // These are the only rules needed for creating address
+    const keyring = new Keyring({ type: 'sr25519', ss58Format: 280 });
+
+    // Add mnemonic to the keyring with the name parameter
+    const pair = keyring.addFromUri(mnemonic, { name: data.name });
+
+    // Returns the created wallet address and it's mnemonic
+    return { address: pair.address, mnemonic };
   }
 }
