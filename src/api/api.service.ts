@@ -4,11 +4,6 @@ import { CreateWalletDto } from './dto/create-wallet.dto';
 // Import the API
 import { ApiPromise } from '@polkadot/api';
 
-// Import `mnemonicGenerate` to create wallet
-import { mnemonicGenerate } from '@polkadot/util-crypto';
-
-import { Keyring } from '@polkadot/api';
-
 @Injectable()
 export class ApiService {
   async getLatestBlock() {
@@ -34,6 +29,7 @@ export class ApiService {
 
   async createWallet(data: CreateWalletDto) {
     const { mnemonicGenerate } = require('@polkadot/util-crypto');
+    const { Keyring } = require('@polkadot/api');
 
     // generate a random mnemonic, 12 words in length
     const mnemonic = mnemonicGenerate(12);
