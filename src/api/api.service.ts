@@ -103,4 +103,37 @@ export class ApiService {
       await api.disconnect();
     }
   }
+
+  async getTransactionDetails(block_number: number) {
+    const { ApiPromise, WsProvider } = require('@polkadot/api');
+
+    // Initialize the provider
+    const provider = new WsProvider(
+      'wss://rpcnodea01.xode.net/n7yoxCmcIrCF6VziCcDmYTwL8R03a/rpc',
+    );
+
+    // Create the API instance
+    const api = await ApiPromise.create({ provider });
+
+    try {
+      const blockHash = await api.rpc.chain.getBlockHash(block_number);
+
+      // Get the block details
+      const signedBlock = await api.rpc.chain.getBlock(blockHash);
+
+      const formattedEvents = [];
+      // Extract extrinsics
+      signedBlock.block.extrinsics.forEach((extrinsic) => {
+        formattedEvents.push(extrinsic.toHuman());
+      });
+
+      return formattedEvents;
+    } catch (error) {
+      console.error('Error fetching block events:', error);
+      throw new Error(`Failed to fetch block events: ${error.message}`);
+    } finally {
+      // Disconnect the API
+      await api.disconnect();
+    }
+  }
 }
