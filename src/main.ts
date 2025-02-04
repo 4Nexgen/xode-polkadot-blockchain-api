@@ -2,10 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
   await cryptoWaitReady();
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const config = new DocumentBuilder()
     .setTitle('Xode Blockchain API')
@@ -17,8 +19,31 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
 
-  // Setup Swagger with modified document
-  SwaggerModule.setup('docs', app, document);
+  // Custom Swagger UI options
+  const options = {
+    customCss: `
+      .topbar-wrapper {
+        background-image: url(/logo.png);
+        background-repeat: no-repeat;
+        background-position: left center;
+        background-size: contain;
+        padding-left: 100px; /* Adjust based on logo width */;
+      }
+      .topbar-wrapper a{
+        svg{
+          g{
+           display: none !important;
+          }
+          
+        }
+      }
+    `,
+    customSiteTitle: 'Xode Blockchain API',
+    customfavIcon: '/favicon.png',
+  };
+
+  // Setup Swagger with modified document and options
+  SwaggerModule.setup('docs', app, document, options);
 
   app.enableCors({
     allowedHeaders: '*',
