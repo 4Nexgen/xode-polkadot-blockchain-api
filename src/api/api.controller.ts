@@ -113,7 +113,7 @@ export class ApiController {
     return await this.apiService.getBlockTransactions(block_number);
   }
 
-  @Get('transaction/:block_number')
+  @Get('transaction/block/:block_number')
   @ApiOperation({
     summary: 'Get details of a transaction from a block',
     description:
@@ -174,6 +174,59 @@ export class ApiController {
     @Param('block_number', ParseIntPipe) block_number: number,
   ) {
     return await this.apiService.getTransactionDetails(block_number);
+  }
+
+  @Get('transaction/hash/:tx_hash')
+  @ApiOperation({
+    summary: 'Get details of a transaction from a `tx_hash`',
+    description:
+      'Fetches details of a transaction from the specified `tx_hash`',
+  })
+  @ApiParam({
+    name: 'tx_hash',
+    type: String,
+    description: 'The specific transaction hash from `tx_hash`.',
+    example:
+      '0x4d8efaa440f776b81a1360a38c31c902af17eca0e2fef18d0c5d0c5d5a9dc97f3a0',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully fetched transaction hash details.',
+    schema: {
+      example: [
+        {
+          transfers: [
+            {
+              id: '0001424678-59d5f-000003',
+              extrinsicHash:
+                '0x6f8ed70fc3b0ed18d3310a7a0b8650f84d251e913941d8e9b06c36f7b306e8f5',
+              blockNumber: 1424678,
+              timestamp: '2025-02-07T02:15:25.129000Z',
+              amount: '1000000000000',
+              fee: '1471148245',
+              from: {
+                id: '5E7Kr282poSkXJAd5v13BEntpxCASuhjPY3LMLEhLS3nqZoc',
+              },
+              to: {
+                id: '5He4GqGDZRxnff2eSDuYYNqkBYVFmwyBfSy5FtXZeP6UNfVk',
+              },
+            },
+          ],
+          assetTransfers: [],
+        },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid `tx_hash` provided.',
+  })
+  @ApiResponse({
+    status: 500,
+    description: 'Internal server error.',
+  })
+  async getTransactionHashDetails(@Param('tx_hash') tx_hash: string) {
+    return await this.apiService.getTransactionHashDetails(tx_hash);
   }
 
   /**

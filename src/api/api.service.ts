@@ -160,6 +160,47 @@ export class ApiService {
     }
   }
 
+  async getTransactionHashDetails(tx_hash: string) {
+    try {
+      const query = {
+        query: `query MyQuery($tx_hash: String = "") { 
+                transfers(where: { extrinsicHash_eq: $tx_hash }) { 
+                    id extrinsicHash blockNumber timestamp amount fee 
+                    from { id } 
+                    to { id } 
+                } 
+                assetTransfers(where: { extrinsicHash_eq: $tx_hash }) { 
+                    id extrinsicHash blockNumber timestamp amount fee 
+                    asset { id name symbol } 
+                    from { id } 
+                    to { id } 
+                } 
+            }`,
+        variables: { tx_hash },
+        operationName: 'MyQuery',
+      };
+
+      const response = await fetch('https://subsquid.xode.net/graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(query),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `GraphQL request failed with status ${response.status}`,
+        );
+      }
+
+      const result = await response.json();
+      return result.data;
+    } catch (error) {
+      throw new Error(
+        `Failed to fetch transaction hash details: ${error.message}`,
+      );
+    }
+  }
+
   /**
    * Fetches the native balance of a given wallet address in the XODE blockchain.
    *
