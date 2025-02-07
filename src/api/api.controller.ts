@@ -113,7 +113,7 @@ export class ApiController {
     return await this.apiService.getBlockTransactions(block_number);
   }
 
-  @Get('transaction/block/:block_number')
+  @Get('transactions/:block_number')
   @ApiOperation({
     summary: 'Get details of a transaction from a block',
     description:
@@ -176,7 +176,7 @@ export class ApiController {
     return await this.apiService.getTransactionDetails(block_number);
   }
 
-  @Get('transaction/hash/:tx_hash')
+  @Get('transaction/:tx_hash')
   @ApiOperation({
     summary: 'Get details of a transaction from a `tx_hash`',
     description:
@@ -187,7 +187,7 @@ export class ApiController {
     type: String,
     description: 'The specific transaction hash from `tx_hash`.',
     example:
-      '0x4d8efaa440f776b81a1360a38c31c902af17eca0e2fef18d0c5d0c5d5a9dc97f3a0',
+      '0x6f8ed70fc3b0ed18d3310a7a0b8650f84d251e913941d8e9b06c36f7b306e8f5',
   })
   @ApiResponse({
     status: 200,
