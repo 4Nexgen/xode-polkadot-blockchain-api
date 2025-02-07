@@ -195,6 +195,7 @@ export class ApiService {
       const result = await response.json();
       return result.data;
     } catch (error) {
+      console.log(error);
       throw new Error(
         `Failed to fetch transaction hash details: ${error.message}`,
       );
