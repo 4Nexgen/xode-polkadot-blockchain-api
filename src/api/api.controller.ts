@@ -197,7 +197,6 @@ export class ApiController {
         {
           transfers: [
             {
-              id: '0001424678-59d5f-000003',
               extrinsicHash:
                 '0x6f8ed70fc3b0ed18d3310a7a0b8650f84d251e913941d8e9b06c36f7b306e8f5',
               blockNumber: 1424678,
