@@ -113,7 +113,7 @@ export class ApiController {
     return await this.apiService.getBlockTransactions(block_number);
   }
 
-  @Get('transactions/:block_number')
+  @Get('transaction/:block_number')
   @ApiOperation({
     summary: 'Get details of a transaction from a block',
     description:
