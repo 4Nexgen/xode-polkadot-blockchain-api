@@ -165,12 +165,12 @@ export class ApiService {
       const query = {
         query: `query MyQuery($tx_hash: String = "") { 
                 transfers(where: { extrinsicHash_eq: $tx_hash }) { 
-                    extrinsicHash blockNumber timestamp amount fee 
+                    id extrinsicHash blockNumber timestamp amount fee 
                     from { id } 
                     to { id } 
                 } 
                 assetTransfers(where: { extrinsicHash_eq: $tx_hash }) { 
-                    extrinsicHash blockNumber timestamp amount fee 
+                    id extrinsicHash blockNumber timestamp amount fee 
                     asset { id name symbol } 
                     from { id } 
                     to { id } 
