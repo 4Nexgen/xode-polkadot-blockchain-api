@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateWalletDto } from './dto/create-wallet.dto';
+import axios from 'axios';
 
 @Injectable()
 export class ApiService {
@@ -165,12 +166,12 @@ export class ApiService {
       const query = {
         query: `query MyQuery($tx_hash: String = "") { 
                 transfers(where: { extrinsicHash_eq: $tx_hash }) { 
-                    extrinsicHash blockNumber timestamp amount fee 
+                    extrinsicHash blockNumber amount fee 
                     from { id } 
                     to { id } 
                 } 
                 assetTransfers(where: { extrinsicHash_eq: $tx_hash }) { 
-                    extrinsicHash blockNumber timestamp amount fee 
+                    extrinsicHash blockNumber amount fee 
                     asset { id name symbol } 
                     from { id } 
                     to { id } 
@@ -180,23 +181,18 @@ export class ApiService {
         operationName: 'MyQuery',
       };
 
-      const response = await fetch('https://subsquid.xode.net/graphql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(query),
-      });
+      const response = await axios.post(
+        'https://subsquid.xode.net/graphql',
+        query,
+        {
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
 
-      if (!response.ok) {
-        throw new Error(
-          `GraphQL request failed with status ${response.status}`,
-        );
-      }
-
-      const result = await response.json();
-      return result.data;
+      return response.data.data;
     } catch (error) {
       throw new Error(
-        `Failed to fetch transaction hash details: ${error.message}`,
+        `Failed to fetch transaction hash details: ${error.response?.data?.message || error.message}`,
       );
     }
   }
