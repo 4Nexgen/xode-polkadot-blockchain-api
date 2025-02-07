@@ -211,7 +211,27 @@ export class ApiController {
               },
             },
           ],
-          assetTransfers: [],
+          assetTransfers: [
+            {
+              extrinsicHash:
+                '0x0debfe1aa6cfb718d971536821e37e8393a06b20079669ccd7ed7292f5a79f06',
+              blockNumber: 1424784,
+              timestamp: '2025-02-07T02:59:24.782000Z',
+              amount: '1998289000000000000000',
+              fee: '1511439476',
+              asset: {
+                id: '6',
+                name: 'Private DON Token',
+                symbol: 'IDON',
+              },
+              from: {
+                id: '5CtecGsT4o8zDkHSJFsnoWwYuYmkuwW6Tm571vPbtXUNjWjF',
+              },
+              to: {
+                id: '5H1c6G4JifmHXRNB5bNyrxw25USB4jBCzpzvFYx5hquUnBYe',
+              },
+            },
+          ],
         },
       ],
     },
