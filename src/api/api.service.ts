@@ -147,7 +147,10 @@ export class ApiService {
       const formattedEvents = [];
       // Extract extrinsics
       signedBlock.block.extrinsics.forEach((extrinsic) => {
-        formattedEvents.push(extrinsic.toHuman());
+        const extrinsicHash = extrinsic.hash.toHex();
+        const extrinsicEvent = extrinsic.toHuman();
+        const tx = { ...extrinsicEvent, extrinsicHash };
+        formattedEvents.push(tx);
       });
 
       return formattedEvents;

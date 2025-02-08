@@ -158,6 +158,8 @@ export class ApiController {
             Id: '5CJz4Eah6P6xWaXRZpkyAKqSk1gFzvEuswyW7xDwc1ebfr5P',
           },
           tip: '0',
+          extrinsicHash:
+            '0x7a1572842f6938a47ab76c0d83e9a0310b6c6cf189141d4c6353cab3211a3c9b',
         },
       ],
     },
