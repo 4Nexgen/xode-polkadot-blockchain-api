@@ -49,7 +49,7 @@ export class ApiService {
 
     // Define the WebSocket provider URL for the Polkadot node.
     const provider = new WsProvider(
-      'wss://rpcnodea01.xode.net/n7yoxCmcIrCF6VziCcDmYTwL8R03a/rpc',
+      process.env.RPC_URL
     );
 
     // Create the Polkadot API instance.
@@ -75,7 +75,7 @@ export class ApiService {
 
     // Initialize the provider
     const provider = new WsProvider(
-      'wss://rpcnodea01.xode.net/n7yoxCmcIrCF6VziCcDmYTwL8R03a/rpc',
+      process.env.RPC_URL
     );
 
     // Create the API instance
@@ -132,7 +132,7 @@ export class ApiService {
 
     // Initialize the provider
     const provider = new WsProvider(
-      'wss://rpcnodea01.xode.net/n7yoxCmcIrCF6VziCcDmYTwL8R03a/rpc',
+      process.env.RPC_URL
     );
 
     // Create the API instance
@@ -221,7 +221,7 @@ export class ApiService {
 
     // Initialize the provider with the WebSocket RPC endpoint
     const provider = new WsProvider(
-      'wss://rpcnodea01.xode.net/n7yoxCmcIrCF6VziCcDmYTwL8R03a/rpc',
+      process.env.RPC_URL
     );
 
     // Create the API instance
