@@ -1,0 +1,10 @@
+services:
+  app:
+    image: xoderockson/xode-polkadot-blockchain-api:latest
+    container_name: xode-polkadot-blockchain-api
+    env_file:
+      - .env
+    ports:
+      - 3027:3000
+    volumes:
+      - /var/www/xode/xode-polkadot-blockchain-api/.env:/usr/src/app/.env
